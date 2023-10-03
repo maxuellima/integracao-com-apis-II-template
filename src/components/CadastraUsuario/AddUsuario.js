@@ -8,31 +8,44 @@ function AddUsuario(props) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
 
-  const postNovoUsuario = () => {
-    const body = {
-      name: nome,
-      email
-    };
-    axios
-      .post(
-        BASE_URL,
-        body,
-        {
-          headers: {
-            Authorization: AUTH_TOKEN
-          }
-        }
-      )
-      .then(() => {
-        alert("usuario criado!");
-        props.getUsuarios();
-        setEmail("");
-        setNome("");
-      })
-      .catch((err) => {
-        console.log("erro add", err.response);
-      });
+  const postNovoUsuario = async () => {
+    
+    try{
+      const body = {
+        name: nome,
+        email
+      };
+      await axios.post(BASE_URL, body, {headers: { Authorization: AUTH_TOKEN}})
+      alert("Usuário criado!")
+      props.getUsuarios();
+      setEmail("")
+      setNome("")
+
+    }
+    catch(error){
+      console.log("Erro ao cadastrar usuário", error.response);
+    }
+    
   };
+    // axios
+    //   .post(
+    //     BASE_URL,
+    //     body,
+    //     {
+    //       headers: {
+    //         Authorization: AUTH_TOKEN
+    //       }
+    //     }
+    //   )
+    //   .then(() => {
+    //     alert("usuario criado!");
+    //     props.getUsuarios();
+    //     setEmail("");
+    //     setNome("");
+    //   })
+    //   .catch((err) => {
+    //     console.log("erro add", err.response);
+    //   });
 
   return (
     <ContainerCadastro>

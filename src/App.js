@@ -9,6 +9,8 @@ import {
   ButtonCadastro,
   BoxCadastro,
 } from "./Appstyle";
+
+//Importando duas constantes
 import { BASE_URL } from "./constants/BASE_URL";
 import { AUTH_TOKEN } from "./constants/AUTH_TOKEN";
 
@@ -25,14 +27,11 @@ function App() {
 
   const getUsuarios = () => {
     axios
-      .get(
-        BASE_URL,
-        {
-          headers: {
-            Authorization: AUTH_TOKEN,
-          },
-        }
-      )
+      .get(BASE_URL, {
+        headers: {
+          Authorization: AUTH_TOKEN,
+        },
+      })
       .then((res) => {
         setUsuarios(res.data);
       })
@@ -41,9 +40,21 @@ function App() {
       });
   };
 
-  const pesquisaUsuario = (pesquisa) => {
-   
+  const pesquisaUsuario = async (pesquisa) => {
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/search?name=${pesquisa.nome}&email=${pesquisa.email}`,
+        { headers: { Authorization: AUTH_TOKEN } }
+      );
+      setUsuarios(res.data);
+      console.log(res.data);
+    } catch (error) {
+      alert(error.response.data);
+    }
   };
+  useEffect(() => {
+    pesquisaUsuario(pesquisa);
+  }, [pesquisa]);
 
   const onChangeName = (e) => {
     setNome(e.target.value);
@@ -59,16 +70,15 @@ function App() {
       email,
     };
     setPesquisa(novaPesquisa);
-   
-    setNome("")
-    setEmail("")
-    
+
+    setNome("");
+    setEmail("");
   };
 
   const onClickVoltar = () => {
     getUsuarios();
-    setPageFlow(1)
-  }
+    setPageFlow(1);
+  };
 
   return (
     <div>
@@ -96,6 +106,7 @@ function App() {
                 <button type="submit" onClick={enviarDados}>
                   Pesquisar
                 </button>
+                <button onClick={onClickVoltar}>Voltar</button>
               </div>
               {pageFlow === 3 ? (
                 <ButtonCadastro onClick={onClickVoltar}>Voltar</ButtonCadastro>
@@ -104,7 +115,6 @@ function App() {
                   Cadastrar
                 </ButtonCadastro>
               )}
-              
             </ContainerBarra>
             {usuarios.map((usuario) => {
               return (
@@ -119,7 +129,6 @@ function App() {
             })}
           </>
         )}
-        
       </ContainerPrincipal>
     </div>
   );
